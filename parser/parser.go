@@ -2,11 +2,15 @@ package parser
 
 import (
 	"bytes"
+	"encoding/csv"
 	"encoding/json"
 	"fmt"
-	"golang.org/x/net/html"
+	"log"
 	"net/http"
 	"os"
+	"time"
+
+	"golang.org/x/net/html"
 )
 
 type Parser struct {
@@ -59,6 +63,33 @@ func (p Parser) GetCompanies() []Company {
 	}
 
 	return newComps
+}
+
+func (p Parser) Store(companies []Company) {
+	now := time.Now()
+	y, m, d := now.Date()
+	title := fmt.Sprintf("data/%d-%d-%d.csv", m, d, y)
+
+	headers := []string{"Company Name", "Ticker", "Market Cap ($ Millions)", "Price From", "Most Recent Quarter Data"}
+	records := [][]string{
+		headers,
+	}
+
+	for _, c := range companies {
+		record := []string{c.Name, c.Ticker, c.MarketCap, c.PriceFrom, c.RecentQuarterData}
+		records = append(records, record)
+	}
+
+	f, err := os.OpenFile(title, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
+	if err != nil {
+		panic(err)
+	}
+
+	w := csv.NewWriter(f)
+	w.WriteAll(records)
+	if err := w.Error(); err != nil {
+		log.Fatalln("Error writing to csv:", err)
+	}
 }
 
 func processCompanies(n *html.Node, companies []*Company) []*Company {

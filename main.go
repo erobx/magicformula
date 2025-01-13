@@ -14,9 +14,7 @@ func main() {
 	parser := parser.NewParser()
 
 	companies := parser.GetCompanies()
-	for _, comp := range companies {
-		printCompany(comp)
-	}
+	parser.Store(companies)
 }
 
 func printCompany(comp parser.Company) {
