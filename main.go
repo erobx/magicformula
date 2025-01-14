@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/erobx/magicformula/parser"
+	"github.com/erobx/magicformula/ui"
 	"github.com/joho/godotenv"
 )
 
@@ -11,10 +12,13 @@ func main() {
 	err := godotenv.Load()
 	ftp(err)
 
-	parser := parser.NewParser()
+	app := ui.App{}
+	app.Run("Magic Formula")
 
-	companies := parser.GetCompanies()
-	parser.Store(companies)
+	//parser := parser.NewParser()
+
+	//companies := parser.GetCompanies()
+	//parser.Store(companies)
 }
 
 func printCompany(comp parser.Company) {
