@@ -90,6 +90,8 @@ func (p Parser) Store(companies []Company) {
 	if err := w.Error(); err != nil {
 		log.Fatalln("Error writing to csv:", err)
 	}
+
+	fmt.Println("Saved stocks to csv")
 }
 
 func processCompanies(n *html.Node, companies []*Company) []*Company {

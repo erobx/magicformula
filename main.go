@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/erobx/magicformula/parser"
 	"github.com/erobx/magicformula/ui"
@@ -9,20 +10,33 @@ import (
 )
 
 func main() {
+	if len(os.Args) < 2 {
+		fmt.Println("Expected scrape flag")
+		os.Exit(1)
+	}
+
 	err := godotenv.Load()
 	ftp(err)
 
-	app := ui.App{}
-	app.Run("Magic Formula")
-
-	//parser := parser.NewParser()
-
-	//companies := parser.GetCompanies()
-	//parser.Store(companies)
+	switch os.Args[1] {
+	case "y":
+		fmt.Println("Scrapping html...")
+		runParser()
+	case "n":
+		fmt.Println("Starting app..")
+		runApp()
+	}
 }
 
-func printCompany(comp parser.Company) {
-	fmt.Printf("%s, %s, %s\n", comp.Name, comp.Ticker, comp.MarketCap)
+func runApp() {
+	app := ui.NewApp()
+	app.Run("Magic Formula")
+}
+
+func runParser() {
+	parser := parser.NewParser()
+	companies := parser.GetCompanies()
+	parser.Store(companies)
 }
 
 func ftp(err error) {
